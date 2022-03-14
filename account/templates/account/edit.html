@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Edit Your Profile{% endblock %}
+{% block body %}
+    <div class="container">
+        <h1 class="text-center bg-secondary text-white mt-2" style="border-radius: 5px">Edit Your Profile</h1>
+        <form action="" method="post" class="form-control" enctype="multipart/form-data">
+            {{ user_form|crispy }}
+            {{ profile_form|crispy }}
+            {% csrf_token %}
+            <input value="Update Profile" type="submit" class="btn btn-success">
+            <a href="{% url 'account:dashboard' %}" class="btn btn-danger">Cancel</a>
+        </form>
+
+
+    </div>
+{% endblock %}

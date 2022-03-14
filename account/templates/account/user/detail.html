@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% block title %}{{ user.get_full_name }}{% endblock %}
+{% block body %}
+    <div class="container row">
+        <h1 class="text-dark  p-2">{{ user.get_full_name }}</h1>
+        <hr>
+        <div class="profile-info col-3">
+            {% thumbnail user.profile.photo "180x180" crop="100%" as im %}
+                <img src="{{ im.url }}" class="user-detail p-3" alt="image is not ">
+            {% endthumbnail %}
+        </div>
+        <div class="container col-9">
+            {% with total_followers=user.followers.count %}
+                <div class="p-3">
+                <span class="count bg-success p-3 text-white" style="border-radius: 15px">
+                        <span class="total">{{ total_followers }}</span>
+                        follower{{ total_followers|pluralize }}
+                        </span>
+                    <span class="count bg-success p-3 text-white float-end"
+                          style="border-radius: 15px;margin-top: -20px;">
+                        <a href="#" data-id="{{ user.id }}"
+                           data-action="{% if request.user in user.followers.all %}un{% endif %}follow"
+                           class="follow button text-white text-decoration-none">
+                        {% if request.user not in user.followers.all %}
+                            Follow
+                        {% else %}
+                            Unfollow
+                        {% endif %}
+                        </a>
+                    </span>
+                </div>
+                <div id="image-list" class="image-container">
+                    {% include "images/image/list_ajax.html" with images=user.images_created.all %}
+                </div>
+            {% endwith %}
+        </div>
+    </div>
+{% endblock %}
+{% block domready %}
+    $('a.follow').click(function(e){
+    e.preventDefault();
+    $.post('{% url "account:user_follow" %}',
+    {
+    id: $(this).data('id'),
+    action: $(this).data('action'),
+    },
+    function(data){
+
+{#    if (data['status'] == 'ok') {#}
+{#    var previous_action = $('a.follow').data('action');#}
+{##}
+{#    $('a.follow').data('action',#}
+{#    previous_action == 'follow' ? 'unfollow' : 'follow');#}
+{##}
+{#    $('a.follow').text(#}
+{#    previous_action == 'follow' ? 'Unfollow' : 'Follow');#}
+{##}
+{#    var previous_followers = parseInt(#}
+{#    $('span.count .total').text());#}
+{#    $('span.count .total').text(previous_action == 'follow' ?#}
+{#    previous_followers + 1 : previous_followers - 1);#}
+{#    }#}
+    });
+    });
+{% endblock %}

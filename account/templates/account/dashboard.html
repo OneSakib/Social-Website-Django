@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center text-white bg-secondary mt-2">Dashboard</h1>
+        {% with total_images_created=request.user.images_created.count %}
+            <h5>Welcome to Your Dashboard. You have bookmarked {{ total_images_created }}
+                Image{{ total_images_created|pluralize }}
+            </h5>
+            <h5>Drag the following button to your bookmark toolbar to bookmark images from other website <a
+                    href="javascript:{% include 'bookmarklet_launcher.js' %}" class="btn btn-success">Bookmark it </a>
+            </h5>
+
+        {% endwith %}
+        <h4>You can also <a class="btn btn-success" href="{% url 'account:edit' %}">Edit Your Profile </a>or <a
+                class="btn btn-success" href="{% url 'account:password_change' %}">Change your Password</a></h4>
+
+    <a class="text-decoration-none fs-3 bg-primary p-1 text-white" style="border-radius: 5px" href="{% url 'images:ranking_images' %}">Most Viewed Images</a>
+    </div>
+    <div class="container mt-1">
+        <h2 class="text-center text-white bg-secondary p-2">What's happening</h2>
+        <div id="action-list">
+            {% for action in actions %}
+                {% include "actions/action/detail.html" %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

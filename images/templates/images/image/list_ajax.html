@@ -1,0 +1,31 @@
+{% load thumbnail %}
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for image in images %}
+            <div class="col">
+                <div class="card shadow-sm">
+                    <a href="{{ image.get_absolute_url }}">
+                        {% thumbnail image.image "300x300" crop="100%" as im %}
+                            <a href="{{ image.get_absolute_url }}">
+                                <img src="{{ im.url }}" alt="Image not found" class="border border-2 card-img-top"
+                                     style="margin-left: 5px">
+                            </a>
+                        {% endthumbnail %}
+                    </a>
+                    <div class="card-body">
+                        <div class="info mt-1 text-center p-2 card-body"
+                             style="width: 300px; border: 2px solid white; margin-left: 8px;background-color: gray">
+                            <a href="{{ image.get_absolute_url }}"
+                               class="title text text-white p-2 text-decoration-none">
+                                {{ image.title|title }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+

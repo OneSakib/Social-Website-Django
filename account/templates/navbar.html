@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid text-center">
+        <a class="navbar-brand text-center" href="{% url 'account:login' %}">Social Website</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if section == "dashboard" %} active {% endif %}" aria-current="page"
+                           href="{% url 'account:dashboard' %}">My
+                            Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if section == "images" %} active {% endif %}" href="{% url 'images:list' %}">Images</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if section == "people" %} active {% endif %}" href="{% url 'account:user_list' %}">People</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <div class="d-flex">
+                {% if request.user.is_authenticated %}
+                    <h5 class="text-white">Hello <b class="text-white">{{ request.user|title }}</b> <a
+                            class="text-white btn btn-danger"
+                            href="{% url 'account:logout' %}">Logout</a>
+                    </h5>
+                {% else %}
+                    <h5 class="text-white"><a href="{% url 'account:login' %}"
+                                              class="text-white btn-danger btn">Log-in</a></h5>
+                    <h5 class="text-white" style="margin-left: 2px"><a href="{% url 'account:register' %}"
+                                              class="text-white btn-danger btn">Sign-up</a></h5>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</nav>

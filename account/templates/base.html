@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load static %}
+{% load crispy_forms_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% block css %} {% endblock %}
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'Bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous">
+    <link href="{% static 'Bootstrap/css/style.css' %}" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    {#               Ajax               #}
+    <script>
+
+        var csrftoken = Cookies.get('csrftoken');
+        function csrfSafeMethod(method) {
+// these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+
+                if (! csrfSafeMethod(settings.type) && ! this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        $(document).ready(function () {
+            {% block domready %}
+            {% endblock %}
+        });
+    </script>
+</head>
+<body>
+{% include 'navbar.html' %}
+<!-- Alert  -->
+<div class="container mt-1">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                <b class="text-dark">{{ message|safe }}</b>
+                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% block body %}{% endblock %}
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="{% static 'Bootstrap/js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'Bootstrap/jquery/jquery-3.6.0.js' %}"></script>
+
+</body>
+</html>

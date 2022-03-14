@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Log-in {% endblock %}
+{% block css %}
+    <style>
+        ul li {
+            color: red;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="container mt-3">
+        <h1 class="text-center p-2 text-white bg-secondary">Log-in</h1>
+        {% if form.errors %}
+            <h5>
+                Your User name and Password didn't match please try again.
+            </h5>
+        {% else %}
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-5">
+                    <h5 class="text text-danger">>>Please, use the login form to log-in</h5>
+                    <form action="{% url 'account:login' %}" method="post" class="form-control" novalidate>
+                        {% for form in form %}
+                            {{ form.label_tag }}{{ form }}{{ form.errors }}
+                        {% endfor %}
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                        <input value="log in" type="submit" class="btn btn-success mt-2">
+                    </form>
+                </div>
+                <div class="col-2 mt-4 border ">
+                    <a href="{% url 'social:begin' "facebook" %}" class="btn btn-primary mt-3">Log in with <img
+                            src="{% static 'facebook.webp' %}" width="40"></a>
+                    <a href="{% url 'social:begin' "twitter" %}" class="btn  mt-3" style="background-color: RGB(36, 200, 255);">Log in with <img src="{% static 'twitter.png' %}" width="40"></a>
+                    <a href="{% url 'social:begin' "google-oauth2" %}" class="btn btn-danger mt-3">Log in with <img src="{% static 'google.png' %}" width="40"></a>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

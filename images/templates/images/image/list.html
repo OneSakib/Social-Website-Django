@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Images bookmarked{% endblock %}
+{% block body %}
+    <div class="container">
+        <h1 class="text-center bg-secondary text-white p-2">Images bookmarked</h1>
+        <div id="image-list  row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% include "images/image/list_ajax.html" %}
+        </div>
+    </div>
+
+
+
+    {#    Pagination #}
+
+    <div class="container" style="margin-right: -300px">
+        <nav aria-label="...">
+            <ul class="pagination">
+                {% if images.has_previous %}
+                    <li class="page-item">
+                        <span class="page-link"><a class="text-decoration-none"
+                                                   href="?page={{ images.previous_page_number }}">Previous</a></span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <span class="page-link disabled"><a class="text-decoration-none"
+                                                   >Previous</a></span>
+                    </li>
+                {% endif %}
+                <li class="page-item"><a class="page-link">Page {{ images.number }}
+                    of {{ images.paginator.num_pages }}.</a></li>
+                {% if images.has_next %}
+                    <li class="page-item">
+                        <span class="page-link "><a class="text-decoration-none"
+                                href="?page={{ images.next_page_number }}">Next</a></span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <span class="page-link disabled"><a class="text-decoration-none"
+                                >Next</a></span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+{% endblock %}
+{% block domready %}
+    var page = 1;
+    var empty_page = false;
+    var block_request = false;
+    $(window).scroll(function() {
+    var margin = $(document).height() - $(window).height() - 200;
+    if ($(window).scrollTop() > margin && empty_page == false && block_request == false) {
+    block_request = true;
+    page += 1;
+    $.get('?page=' + page, function(data) {
+    if(data == '') {
+    empty_page = true;
+    }
+    else {
+    block_request = false;
+    $('#image-list').append(data);
+    }
+    });
+    }
+    });
+{% endblock %}

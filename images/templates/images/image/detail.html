@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load  thumbnail %}
+{% block title %}{{ image.title }}{% endblock %}
+{% block body %}
+    <div class="container-fluid row">
+        <h1 class="text-center p-2 text-white bg-secondary">{{ image.title|title }}</h1>
+        <div class="col-6">
+            {% thumbnail image.image "500" as im %}
+                <a href="{{ image.image.url }}"><img src="{{ im.url }}">
+                </a>
+            {% endthumbnail %}
+        </div>
+        <div class="col-6">
+            {% with total_likes=image.users_like.count users_like=image.users_like.all %}
+                <div class="image-info">
+                    <div>
+                    <span class="count bg-success text-white p-2" style="margin-right: 50px">
+                        {{ total_views }} view{{ total_views|pluralize }}
+                    </span>
+                        <span class="count text-primary fw-bold">
+                    <span class="total"><b>{{ total_likes }}</b></span>
+                    like{{ total_likes|pluralize }}
+                    </span>
+                        <a href="#" data-id="{{ image.id }}"
+                           data-action="{% if request.user in users_like %}un{% endif %}like"
+                           class="like button btn btn-success">
+                            {% if request.user not in users_like %}
+                                Like
+                            {% else %}
+                                Unlike
+                            {% endif %}
+                        </a>
+                    </div>
+                    {{ image.description|linebreaks }}
+                </div>
+                {#                <div class="image-info">#}
+                {#                    <div>#}
+                {#                      <span class="text bg-primary text-white p-3 mt-3 count"#}
+                {#                            style="border-radius: 5px;margin-right:430px">#}
+                {#                    <span class="total">{{ total_likes }}</span> Like{{ total_likes|pluralize }}#}
+                {#                </span>#}
+                {#                        <a href="#" data-id="{{ image.id }}"#}
+                {#                           data-actions="{% if request.user in users_like %}un{% endif %}like"#}
+                {#                           class="btn btn-success like button">#}
+                {#                            {% if requset.user not in users_like %}#}
+                {#                                Like#}
+                {#                            {% else %}#}
+                {#                                Unlike#}
+                {#                            {% endif %}#}
+                {#                        </a>#}
+                {#                    </div>#}
+                {#                    {{ image.description|linebreaks }}#}
+                {#                </div>#}
+            {% endwith %}
+
+        </div>
+        <div class="row">
+            {% for user in image.users_like.all %}
+                <div class="col-2">
+                    <img src="{{ user.profile.photo.url }}" class="" width="70" style="margin-left: 30px;">
+                    <h5 class="text-white bg-primary text-center mt-2">{{ user }}</h5>
+                </div>
+            {% empty %}
+                <h5 class="text-white bg-primary p-2"> Nobody likes this image yet </h5>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block domready %}
+    $('a.like').click(function(e){
+    e.preventDefault();
+    $.post('{% url "images:like" %}',
+    {
+    id: $(this).data('id'),
+    action: $(this).data('action'),
+    },
+    function(data){
+    if (data['status'] == 'ok')
+    {
+    var previous_action = $('a.like').data('action');
+    // toggle data-action
+    $('a.like').data('action', previous_action == 'like' ? 'unlike' : 'like');
+    // toggle link text
+    $('a.like').text(previous_action == 'like' ? 'Unlike' :'Like');
+    // update total likes
+    var previous_likes = parseInt($('span.count .total').text());
+    $('span.count .total').text(previous_action == 'like' ? previous_likes + 1 : previous_likes - 1);
+    }
+    }
+    );
+    });
+{% endblock %}
